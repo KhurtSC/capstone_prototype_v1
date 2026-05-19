@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Pangasinan Provincial Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-green: #0ea64e;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --input-bg: #f3f4f6;
+            --input-border: #e5e7eb;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            background-color: #ffffff;
+            overflow: hidden; /* Prevents scrolling on the login page */
+        }
+
+        /* Left Side: Large Image Showcase */
+        .login-showcase {
+            flex: 2.8; /* Increased from 2 to push the login panel to be narrower */
+            background-image: url('building.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Subtle dark overlay to make it look premium */
+        .login-showcase::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1); 
+        }
+
+        /* Right Side: Form Container */
+        .login-panel {
+            flex: 1; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px; /* Marginally reduced to maximize space inside a narrower panel */
+            background-color: #ffffff;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 280px; /* Tighter width for a smaller scale */
+            text-align: center;
+        }
+        
+        /* Logo */
+        /* Logo */
+        .login-logo {
+            width: 100%;
+            max-width: 165px; /* Scaled down slightly to fit the smaller layout */
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        /* Typography */
+        .form-wrapper h1 {
+            font-size: 22px; /* Decreased from 26px */
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .form-wrapper p {
+            font-size: 12px; /* Decreased from 13px */
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* Form Inputs */
+        .input-group {
+            margin-bottom: 12px; /* Tighter gap between fields */
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px 14px; /* Reduced padding from 14px 18px to make fields thinner */
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 6px; /* Reduced from 12px for a tighter, more precise box look */
+            font-size: 14px; /* Decreased from 15px */
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-field::placeholder {
+            color: #9ca3af;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(14, 166, 78, 0.1);
+        }
+
+        /* Submit Button */
+        .login-btn {
+            width: 100%;
+            padding: 11px; /* Thinned out to match the input fields */
+            background-color: var(--primary-green);
+            color: #ffffff;
+            border: none;
+            border-radius: 30px; /* Keeps the perfect pill/capsule shape */
+            font-size: 14px; /* Decreased from 16px */
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #0c8f43;
+        }
+
+        /* Forgot Password Link */
+        .forgot-link {
+            display: inline-block;
+            margin-top: 20px; /* Tighter spacing */
+            font-size: 11px; /* Slightly smaller text */
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            color: var(--text-dark);
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .login-showcase {
+                flex: none;
+                height: 30vh;
+            }
+            .login-panel {
+                flex: 1; 
+                display: flex;
+                align-items: flex-start;    /* Pushes the form to the top */
+                justify-content: center;
+                padding: 70px 30px 30px 30px; /* Generous top padding, leaving the bottom completely open */
+                background-color: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-showcase"></div>
+
+    <div class="login-panel">
+        <div class="form-wrapper">
+            <img src="logo1.png" alt="Pangasinan Provincial Library Logo" class="login-logo">
+            
+            <h1>Welcome, Librarian!</h1>
+            <p>Please enter your credentials to access the librarian dashboard</p>
+
+            <form action="dashboard-librarian.html">
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="input-field" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+
+            <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+    </div>
+
+</body>
+</html>

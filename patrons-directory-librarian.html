@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrons Directory - Pangasinan Provincial Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-green: #0ea64e;
+            --bg-color: #f0f2f5;
+            --sidebar-bg: #ffffff;
+            --text-dark: #000000;
+            --text-muted: #5a5a5a;
+            --border-color: #e5e7eb;
+            --link-blue: #38bdf8;
+            --modal-overlay: rgba(0, 0, 0, 0.4);
+            --avatar-bg: #52627a;
+            --input-border: #d1d5db;
+            --danger-red: #ef4444;
+            --muted-gray: #9ca3af;
+        }
+
+        /* Reset and Base Styles */
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scrollbar-gutter: stable; /* 👈 Prevents layout jumping when table scrollbars appear */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 👈 Locks down body layout to match other dashboard pages */
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0; /* 👈 Keeps the sidebar perfectly rigid across page swaps */
+        }
+
+        .logo-container {
+            padding: 35px 20px 20px 20px; 
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 145px; 
+            width: 100%;
+            height: auto; 
+            display: block;
+            margin: 0 auto;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 10px;
+            margin-bottom: 40px; 
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 15px;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-green);
+            color: #ffffff;
+        }
+
+        .nav-item.active i {
+            color: #ffffff;
+        }
+
+        .logout-container {
+            margin-top: auto; /* 👈 This pushes the container to the absolute bottom */
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .logout-btn i {
+            color: #f87171; 
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            scrollbar-gutter: stable; /* 👈 Reserves a permanent pixel lane for scrollbars on all pages */
+        }
+
+        /* Header Elements */
+        .header-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .date-badge {
+            background-color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Top Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 450px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            border: 1px solid #d1d5db;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: #ffffff;
+            color: var(--text-dark);
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: #ffffff;
+        }
+
+        /* Data Table */
+        .table-container {
+            background-color: #ffffff;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 20px 25px;
+            font-weight: 700;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 20px 25px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .action-link {
+            color: var(--link-blue);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .action-link:hover {
+            color: #0284c7;
+        }
+
+        .empty-row td {
+            height: 60px;
+        }
+
+        /* Global Shared Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--modal-overlay);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .modal-backdrop.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 660px;
+            border-radius: 16px;
+            padding: 35px 40px 45px 40px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .modal-backdrop.show .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--text-dark);
+            transition: background-color 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 35px;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* Form Fields Shared Elements */
+        .form-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            align-items: center;
+        }
+
+        .form-row.align-top {
+            align-items: start;
+            padding-top: 5px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .required-star {
+            color: var(--danger-red);
+            margin-left: 3px;
+            font-weight: 700;
+        }
+
+        .input-box, .select-box, .textarea-box {
+            width: 100%;
+            max-width: 260px;
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            outline: none;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        .input-box::placeholder, .textarea-box::placeholder {
+            color: var(--muted-gray);
+        }
+
+        .input-box:focus, .select-box:focus, .textarea-box:focus {
+            border-color: var(--primary-green);
+        }
+
+        .textarea-box {
+            max-width: 260px;
+            height: 75px;
+            resize: none;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 260px;
+        }
+
+        .select-box {
+            max-width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 35px;
+        }
+
+        .select-wrapper i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: #6b7280;
+            pointer-events: none;
+        }
+
+        .right-action-pane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding-top: 5px;
+        }
+
+        .avatar-upload-container {
+            position: relative;
+            width: 124px;
+            height: 124px;
+        }
+
+        .avatar-circle-display {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--avatar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar-circle-display i {
+            font-size: 72px;
+            color: #e5e7eb;
+            margin-top: 15px;
+        }
+
+        .avatar-circle-display.large-circle {
+            width: 124px;
+            height: 124px;
+        }
+
+        .avatar-circle-display.large-circle i {
+            font-size: 76px;
+            margin-top: 16px;
+        }
+
+        .avatar-add-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background-color: #ffffff;
+            border: 1px solid var(--input-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .avatar-add-badge:hover {
+            background-color: #f3f4f6;
+        }
+
+        .avatar-add-badge i {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .modal-action-buttons {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-modal-cancel {
+            background-color: #e5e7eb;
+            color: var(--text-dark);
+            min-width: 75px;
+            text-align: center;
+        }
+
+        .btn-modal-cancel:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-modal-create {
+            background-color: var(--primary-green);
+            color: #ffffff;
+            min-width: 85px;
+            text-align: center;
+        }
+
+        /* Temporary ID Elements Matrix */
+        #tempIdModal .modal-card {
+            max-width: 680px; 
+            padding: 35px 45px;
+        }
+
+        .temp-id-grid-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 35px; 
+            margin-bottom: 30px;
+        }
+
+        .temp-id-inline-row {
+            display: grid;
+            grid-template-columns: 95px 1fr; 
+            align-items: center;
+            gap: 10px;
+        }
+
+        .system-generated-id-text {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .system-generated-id-muted {
+            font-weight: 400;
+            color: var(--muted-gray);
+            font-style: italic;
+            margin-left: 6px;
+            font-size: 13px;
+        }
+
+        .qr-generated-output-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-top: 10px;
+            text-align: center;
+            animation: scaleIn 0.3s ease-out forwards;
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .qr-vector-output i {
+            font-size: 110px; 
+            color: var(--text-dark);
+            display: block;
+        }
+
+        .qr-action-instruction-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .qr-action-instruction-text a {
+            color: var(--link-blue);
+            text-decoration: underline;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .qr-action-instruction-text a:hover {
+            color: #0284c7;
+        }
+
+        .btn-modal-done {
+            background-color: var(--primary-green);
+            color: #ffffff;
+            padding: 10px 32px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn-modal-done:hover {
+            opacity: 0.9;
+        }
+
+        /* ==========================================================================
+           Expanded Custom Specs for More Info Modal (Spacious Variant Overrides)
+           ========================================================================== */
+        #moreInfoModal .modal-card {
+            max-width: 780px; /* Expanded dynamically to scale row width breathing room */
+            padding: 45px 50px 55px 50px; /* Deeper padding fields */
+        }
+
+        #moreInfoModal .modal-grid {
+            grid-template-columns: 1fr 200px; /* Wider right pane allocation layout */
+            gap: 45px; /* Spacious horizontal column channel gaps */
+        }
+
+        #moreInfoModal .form-list {
+            gap: 22px; /* Increased vertical row padding for deep baseline separation */
+        }
+
+        #moreInfoModal .form-row {
+            grid-template-columns: 160px 1fr; /* Wider space for data indicators */
+        }
+
+        .info-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .info-toggle-btn:hover {
+            transform: scale(1.15);
+            color: var(--primary-green);
+        }
+
+        .active-borrows-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================================
+           Custom Android / Java Style Toast Notifications Component
+           ========================================================================== */
+        .java-toast-pill {
+            position: fixed;
+            bottom: -60px; /* Initially hidden below viewport edge */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(31, 41, 55, 0.92); /* Dark charcoal tint overlay */
+            color: #ffffff;
+            padding: 11px 26px;
+            border-radius: 30px;
+            font-size: 13.5px;
+            font-weight: 500;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.2px;
+            z-index: 100000; /* Forces placement explicitly on top of everything else */
+            pointer-events: none;
+            opacity: 0;
+            transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+        }
+
+        .java-toast-pill.reveal-toast {
+            bottom: 40px; /* Snaps gracefully into position at bottom center */
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <a href="dashboard-librarian.html">
+                    <img src="logo1.png" alt="Pangasinan Provincial Library Logo">
+                </a>
+            </div>
+
+            <ul class="nav-menu">
+                <a href="dashboard-librarian.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Dashboard
+                </a>
+                <a href="patrons-directory-librarian.html" class="nav-item active">
+                    <i class="fas fa-cogs"></i>
+                    Patrons Directory
+                </a>
+                <a href="catalog-librarian.html" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    Catalog
+                </a>
+                <a href="borrowing_returning.html" class="nav-item">
+                    <i class="fas fa-hand-holding"></i>
+                    Borrowing / Returning
+                </a>
+                <a href="historical-records.html" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Historical Records
+                </a>
+            </ul>
+
+            <div class="logout-container">
+                <a href="#" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="header-top">
+                <div class="date-badge">
+                    <span style="font-size: 18px; margin-right: 8px;">🌤️</span>
+                    Sun, May 11, 2026
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search by Name, ID, or Campus">
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-outline" id="openTempIdModalBtn">Add Temporary ID</button>
+                    <button class="btn btn-primary" id="openAddPatronModalBtn">Add Patron</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Full Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Course</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patronsTableBody">
+                        <tr data-phone="0912-345-6789" data-address="#235 New Street, Asinan De Magtaking, Bugallon, Pangasinan" data-school="Pangasinan State University" data-created="03 / 23 / 26" data-borrows="4">
+                            <td>PL-26-4623</td>
+                            <td>James White</td>
+                            <td>24</td>
+                            <td>Male</td>
+                            <td>BSIT</td>
+                            <td><a class="action-link open-info-trigger">More Info</a></td>
+                        </tr>
+                        <tr data-phone="0918-765-4321" data-address="#12 Block 4, Poblacion, Lingayen, Pangasinan" data-school="Pangasinan State University" data-created="01 / 15 / 24" data-borrows="2">
+                            <td>PL-24-2353</td>
+                            <td>Edward Aldrin Jake C. Calimlim</td>
+                            <td>21</td>
+                            <td>Male</td>
+                            <td>BSED</td>
+                            <td><a class="action-link open-info-trigger">More Info</a></td>
+                        </tr>
+                        <tr data-phone="0945-223-8899" data-address="#88 Riverside, San Carlos City, Pangasinan" data-school="N/A" data-created="08 / 09 / 25" data-borrows="0">
+                            <td>PL-25-8673</td>
+                            <td>Lea S. Salompas</td>
+                            <td>22</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><a class="action-link open-info-trigger">More Info</a></td>
+                        </tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="addPatronModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="closeAddModalXBtn" aria-label="Close dialog">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2>Add Patron</h2>
+            </div>
+            <form action="#" method="POST" id="addPatronForm">
+                <div class="modal-grid">
+                    <div class="form-list">
+                        <div class="form-row">
+                            <label class="form-label">Full Name<span class="required-star">*</span></label>
+                            <input type="text" class="input-box" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label">Age<span class="required-star">*</span></label>
+                            <input type="text" class="input-box" placeholder="e.g. 26" required>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label">Gender<span class="required-star">*</span></label>
+                            <div class="select-wrapper">
+                                <select class="select-box" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label">Phone Number<span class="required-star">*</span></label>
+                            <input type="text" class="input-box" placeholder="e.g. 0912-345-6789" required>
+                        </div>
+                        <div class="form-row align-top">
+                            <label class="form-label">Address<span class="required-star">*</span></label>
+                            <textarea class="textarea-box" placeholder="" required></textarea>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label">School</label>
+                            <div class="select-wrapper">
+                                <select class="select-box">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="PSU">Pangasinan State University</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label">Course</label>
+                            <div class="select-wrapper">
+                                <select class="select-box">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="BSIT">BSIT</option>
+                                    <option value="BSED">BSED</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-action-pane">
+                        <div class="avatar-upload-container">
+                            <div class="avatar-circle-display">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <label class="avatar-add-badge" for="avatarFileInput" title="Upload Photo">
+                                <i class="fas fa-plus"></i>
+                            </label>
+                            <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="modal-action-buttons">
+                            <button type="button" class="btn btn-modal-cancel" id="closeAddModalCancelBtn">Cancel</button>
+                            <button type="submit" class="btn btn-modal-create">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="tempIdModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="closeTempModalXBtn" aria-label="Close dialog">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2>Add Temporary ID</h2>
+            </div>
+            <form action="#" id="tempIdForm">
+                <div class="temp-id-grid-matrix" id="tempFieldsFormContainer">
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">Full Name<span class="required-star">*</span></label>
+                        <input type="text" class="input-box" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">ID</label>
+                        <div class="system-generated-id-text">
+                            PL-26-7241<span class="system-generated-id-muted">(System Generated)</span>
+                        </div>
+                    </div>
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">Age<span class="required-star">*</span></label>
+                        <input type="text" class="input-box" placeholder="e.g. 26" required>
+                    </div>
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">Gender<span class="required-star">*</span></label>
+                        <div class="select-wrapper">
+                            <select class="select-box" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">Course</label>
+                        <div class="select-wrapper">
+                            <select class="select-box">
+                                <option value="" disabled selected>Select</option>
+                                <option value="BSIT">BSIT</option>
+                                <option value="BSED">BSED</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">School</label>
+                        <div class="select-wrapper">
+                            <select class="select-box">
+                                <option value="" disabled selected>Select</option>
+                                <option value="PSU">Pangasinan State University</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="temp-id-inline-row">
+                        <label class="form-label">Duration<span class="required-star">*</span></label>
+                        <div class="select-wrapper">
+                            <select class="select-box" required>
+                                <option value="3 Days">3 Days</option>
+                                <option value="1 Day">1 Day</option>
+                                <option value="1 Week">1 Week</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-action-buttons" id="tempActionBtnContainer" style="margin-bottom: 10px;">
+                    <button type="button" class="btn btn-modal-cancel" id="closeTempModalCancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-modal-create">Generate</button>
+                </div>
+
+                <div class="qr-generated-output-zone hidden" id="tempQrCodeOutputContainer">
+                    <div class="qr-vector-output">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <p class="qr-action-instruction-text">
+                        Take an image of the QR or <a>print</a>
+                    </p>
+                    <button type="button" class="btn-modal-done" id="closeTempModalDoneBtn">Done</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="moreInfoModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="closeInfoModalXBtn" aria-label="Close dialog">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2>Patron Information</h2>
+            </div>
+            <div class="modal-grid">
+                <div class="form-list">
+                    <div class="form-row">
+                        <span class="form-label">Full Name</span>
+                        <span class="info-value" id="lblFullName">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">Patron ID</span>
+                        <span class="info-value" id="lblPatronId">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">Age</span>
+                        <span class="info-value" id="lblAge">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">Gender</span>
+                        <span class="info-value" id="lblGender">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">Phone Number</span>
+                        <span class="info-value" id="lblPhoneNumber">---</span>
+                    </div>
+                    <div class="form-row align-top">
+                        <span class="form-label">Address</span>
+                        <span class="info-value" id="lblAddress">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">Course</span>
+                        <span class="info-value" id="lblCourse">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">School</span>
+                        <span class="info-value" id="lblSchool">---</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">Account Created</span>
+                        <span class="info-value" id="lblAccountCreated">---</span>
+                    </div>
+                </div>
+
+                <div class="right-action-pane" style="gap: 18px; justify-content: center;">
+                    <div id="infoPaneAvatarState">
+                        <div class="avatar-circle-display large-circle">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="infoPaneQrState" class="hidden" style="animation: scaleIn 0.25s ease-out forwards;">
+                        <div class="qr-vector-output">
+                            <i class="fas fa-qrcode" style="font-size: 124px;"></i>
+                        </div>
+                    </div>
+
+                    <button type="button" class="info-toggle-btn" id="infoStateToggleBtn" title="Toggle Photo / QR Code">
+                        <i class="fas fa-qrcode" id="infoToggleIcon"></i>
+                    </button>
+
+                    <div class="active-borrows-label">
+                        Active Borrows: <a class="action-link" id="lblActiveBorrows" style="font-weight: 600;">0</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="java-toast-pill" id="globalJavaToastSystemComponent">Patron added successfully</div>
+
+    <script>
+        // Modal 1 Elements: Add Patron
+        const addModal = document.getElementById('addPatronModal');
+        const openAddModalBtn = document.getElementById('openAddPatronModalBtn');
+        const closeXBtn = document.getElementById('closeAddModalXBtn');
+        const closeCancelBtn = document.getElementById('closeAddModalCancelBtn');
+        const addForm = document.getElementById('addPatronForm');
+
+        // Modal 2 Elements: Temporary ID
+        const tempModal = document.getElementById('tempIdModal');
+        const openTempModalBtn = document.getElementById('openTempIdModalBtn');
+        const closeTempXBtn = document.getElementById('closeTempModalXBtn');
+        const closeTempCancelBtn = document.getElementById('closeTempModalCancelBtn');
+        const closeTempDoneBtn = document.getElementById('closeTempModalDoneBtn');
+        const tempForm = document.getElementById('tempIdForm');
+        const tempFieldsFormContainer = document.getElementById('tempFieldsFormContainer');
+        const tempActionBtnContainer = document.getElementById('tempActionBtnContainer');
+        const tempQrCodeOutputContainer = document.getElementById('tempQrCodeOutputContainer');
+
+        // Modal 3 Elements: Patron Info Directory Lookup
+        const infoModal = document.getElementById('moreInfoModal');
+        const closeInfoXBtn = document.getElementById('closeInfoModalXBtn');
+        const infoStateToggleBtn = document.getElementById('infoStateToggleBtn');
+        const infoToggleIcon = document.getElementById('infoToggleIcon');
+        const infoPaneAvatarState = document.getElementById('infoPaneAvatarState');
+        const infoPaneQrState = document.getElementById('infoPaneQrState');
+
+        // Toast Component Target Selector
+        const systemToast = document.getElementById('globalJavaToastSystemComponent');
+
+        // Open Actions
+        openAddModalBtn.addEventListener('click', () => addModal.classList.add('show'));
+        openTempModalBtn.addEventListener('click', () => tempModal.classList.add('show'));
+
+        // Table Row Parsing Event Wireup
+        document.getElementById('patronsTableBody').addEventListener('click', (e) => {
+            if (e.target.classList.contains('open-info-trigger')) {
+                const row = e.target.closest('tr');
+                
+                // Read text values from table cells
+                const cells = row.getElementsByTagName('td');
+                document.getElementById('lblPatronId').innerText = cells[0].innerText;
+                document.getElementById('lblFullName').innerText = cells[1].innerText;
+                document.getElementById('lblAge').innerText = cells[2].innerText;
+                document.getElementById('lblGender').innerText = cells[3].innerText;
+                document.getElementById('lblCourse').innerText = cells[4].innerText;
+                
+                // Read detailed parameters from data attributes
+                document.getElementById('lblPhoneNumber').innerText = row.getAttribute('data-phone');
+                document.getElementById('lblAddress').innerText = row.getAttribute('data-address');
+                document.getElementById('lblSchool').innerText = row.getAttribute('data-school');
+                document.getElementById('lblAccountCreated').innerText = row.getAttribute('data-created');
+                document.getElementById('lblActiveBorrows').innerText = row.getAttribute('data-borrows');
+                
+                // Reveal Modal
+                infoModal.classList.add('show');
+            }
+        });
+
+        // Close Dismissal Routines
+        function dismissAddModal() {
+            addModal.classList.remove('show');
+            addForm.reset();
+        }
+        
+        function dismissTempModal() {
+            tempModal.classList.remove('show');
+            setTimeout(() => {
+                tempForm.reset();
+                tempFieldsFormContainer.classList.remove('hidden');
+                tempActionBtnContainer.classList.remove('hidden');
+                tempQrCodeOutputContainer.classList.add('hidden');
+            }, 200);
+        }
+
+        function dismissInfoModal() {
+            infoModal.classList.remove('show');
+            // Reset right pane profile visual toggle back to standard view upon closing
+            setTimeout(() => {
+                infoPaneAvatarState.classList.remove('hidden');
+                infoPaneQrState.classList.add('hidden');
+                infoToggleIcon.className = 'fas fa-qrcode';
+            }, 200);
+        }
+
+        closeXBtn.addEventListener('click', dismissAddModal);
+        closeCancelBtn.addEventListener('click', dismissAddModal);
+        
+        closeTempXBtn.addEventListener('click', dismissTempModal);
+        closeTempCancelBtn.addEventListener('click', dismissTempModal);
+        closeTempDoneBtn.addEventListener('click', dismissTempModal);
+
+        closeInfoXBtn.addEventListener('click', dismissInfoModal);
+
+        // Process Add Patron Submission with Toast Component Routing
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // 1. Instantly close the modal card stack out of view
+            dismissAddModal();
+            
+            // 2. Display the temporary bottom center floating toast element
+            systemToast.classList.add('reveal-toast');
+            
+            // 3. Keep toast showing for exactly 3 seconds before sliding down
+            setTimeout(() => {
+                systemToast.classList.remove('reveal-toast');
+            }, 3000);
+        });
+
+        // Process Temporary ID State Interchange Switching
+        tempForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            tempFieldsFormContainer.classList.add('hidden');
+            tempActionBtnContainer.classList.add('hidden');
+            tempQrCodeOutputContainer.classList.remove('hidden');
+        });
+
+        // Handle More Info Right-Pane Micro-Interaction Toggling
+        infoStateToggleBtn.addEventListener('click', () => {
+            const isAvatarVisible = !infoPaneAvatarState.classList.contains('hidden');
+            
+            if (isAvatarVisible) {
+                // Switch target to QR Layout Spec
+                infoPaneAvatarState.classList.add('hidden');
+                infoPaneQrState.classList.remove('hidden');
+                infoToggleIcon.className = 'fas fa-user'; // Swap toggle item indicator control to Profile vector
+            } else {
+                // Return back to Profile Avatar Spec
+                infoPaneQrState.classList.add('hidden');
+                infoPaneAvatarState.classList.remove('hidden');
+                infoToggleIcon.className = 'fas fa-qrcode'; // Reset interface option back to QR indicator icon
+            }
+        });
+
+        // Outside Backdrop Click Triggers
+        window.addEventListener('click', (e) => {
+            if (e.target === addModal) dismissAddModal();
+            if (e.target === tempModal) dismissTempModal();
+            if (e.target === infoModal) dismissInfoModal();
+        });
+    </script>
+
+</body>
+</html>

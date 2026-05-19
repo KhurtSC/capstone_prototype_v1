@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog - Pangasinan Provincial Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-green: #0ea64e;
+            --bg-color: #f0f2f5;
+            --sidebar-bg: #ffffff;
+            --text-dark: #000000;
+            --text-muted: #5a5a5a;
+            --border-color: #e5e7eb;
+            --link-blue: #38bdf8;
+            
+            /* Status Dot Colors */
+            --status-green: #22c55e;
+            --status-yellow: #fde047;
+            --status-grey: #a3a3a3;
+            --status-red: #ef4444;
+
+            /* Modal Shared Standards */
+            --modal-overlay: rgba(0, 0, 0, 0.4);
+            --input-border: #d1d5db;
+            --danger-red: #ef4444;
+            --muted-gray: #9ca3af;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+
+        /* Utility Helpers */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .logo-container {
+            padding: 35px 20px 20px 20px; 
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 145px; 
+            width: 100%;
+            height: auto; 
+            display: block;
+            margin: 0 auto;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 10px;
+            margin-bottom: 40px; 
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 15px;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-green);
+            color: #ffffff;
+        }
+
+        .nav-item.active i {
+            color: #ffffff;
+        }
+
+        .logout-container {
+            margin-top: auto; /* 👈 This pushes the container to the absolute bottom */
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .logout-btn i {
+            color: #f87171; 
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            scrollbar-gutter: stable; /* 👈 Reserves a permanent pixel lane for scrollbars on all pages */
+        }
+
+        /* Header Elements */
+        .header-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .date-badge {
+            background-color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Top Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 450px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            border: 1px solid #d1d5db;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .action-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: #ffffff;
+            color: var(--text-dark);
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .btn-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400; 
+            border-radius: 20px; 
+            padding: 10px 20px;
+        }
+        
+        .btn-dropdown strong {
+            font-weight: 700;
+        }
+        
+        .btn-dropdown i {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: #ffffff;
+        }
+
+        /* Data Table */
+        .table-container {
+            background-color: #ffffff;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 20px 25px;
+            font-weight: 700;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 20px 25px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .action-link {
+            color: var(--link-blue);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .action-link:hover {
+            color: #0284c7;
+        }
+
+        /* Status Dots */
+        .status-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-dot {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .dot-available { background-color: var(--status-green); }
+        .dot-borrowed { background-color: var(--status-yellow); }
+        .dot-unavailable { background-color: var(--status-grey); }
+        .dot-overdue { background-color: var(--status-red); }
+
+        .empty-row td {
+            height: 60px;
+        }
+
+        /* ==========================================================================
+           Global Shared Dynamic Modal System 
+           ========================================================================== */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--modal-overlay);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .modal-backdrop.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 680px;
+            border-radius: 16px;
+            padding: 35px 45px 40px 45px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .modal-backdrop.show .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--text-dark);
+            transition: background-color 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        /* Multi-Step Wizard Progress Elements */
+        .wizard-progress-track {
+            background-color: #e5e7eb;
+            height: 12px;
+            border-radius: 10px;
+            width: 220px;
+            margin: 0 auto 10px auto;
+            overflow: hidden;
+        }
+
+        .wizard-progress-fill {
+            background-color: var(--primary-green);
+            height: 100%;
+            width: 33.33%; 
+            border-radius: 10px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .wizard-step-descriptor {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        /* Layout Grid Options */
+        .wizard-split-grid {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .form-column-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .form-matrix-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .required-star {
+            color: var(--danger-red);
+            margin-left: 4px;
+            font-weight: 700;
+        }
+
+        /* Visual Inputs Specs */
+        .input-box, .select-box, .custom-select-container, .select-wrapper {
+            width: 100%;
+            max-width: 260px; 
+        }
+
+        .input-box, .select-box {
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            outline: none;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus, .select-box:focus {
+            border-color: var(--primary-green);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-box {
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 35px;
+        }
+
+        .select-wrapper i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: #6b7280;
+            pointer-events: none;
+        }
+
+        /* Custom Selection Dropdown Elements */
+        .custom-select-trigger-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #ffffff;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color 0.2s;
+        }
+
+        .custom-select-container.active-open .custom-select-trigger-bar {
+            border-color: var(--primary-green);
+        }
+
+        .custom-select-trigger-bar span {
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            max-width: 200px;
+        }
+
+        .custom-select-trigger-bar span.placeholder-active {
+            color: var(--muted-gray);
+        }
+
+        .custom-select-trigger-bar i {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .custom-dropdown-overlay-panel {
+            position: absolute;
+            top: 0;        
+            right: 0;      
+            width: 215px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+            max-height: 255px;
+            overflow-y: auto;
+            z-index: 9999;
+            animation: menuScaleIn 0.2s ease-out forwards;
+        }
+
+        @keyframes menuScaleIn {
+            from { opacity: 0; transform: translateY(-5px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .custom-dropdown-option-item {
+            padding: 10px 18px;
+            font-size: 14px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+            text-align: left;
+        }
+
+        .custom-dropdown-option-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Custom Multi-Select Genre System Substyles */
+        .genre-panel-extended {
+            width: 325px; 
+            max-height: 350px;
+            padding: 18px;
+        }
+
+        .genre-group-heading {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            margin-top: 18px;
+        }
+
+        .genre-group-heading:first-of-type {
+            margin-top: 0;
+        }
+
+        .genre-pill-flexbox {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .genre-pill-item {
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            font-size: 11.5px;
+            color: var(--text-dark);
+            background-color: #ffffff;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+
+        .genre-pill-item:hover {
+            background-color: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .genre-pill-item.selected-active {
+            background-color: var(--primary-green);
+            color: #ffffff;
+            border-color: var(--primary-green);
+        }
+
+        /* Book Cover Image Container Uploader */
+        .cover-upload-pane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cover-title-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            align-self: flex-start;
+        }
+
+        .cover-vector-canvas {
+            width: 120px;
+            height: 140px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        .cover-vector-canvas .fa-image {
+            font-size: 48px;
+            color: #3b82f6;
+            opacity: 0.8;
+        }
+
+        .cover-add-badge {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 30px;
+            height: 30px;
+            background-color: #ffffff;
+            border: 1px solid var(--input-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cover-add-badge i {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        /* Lower Nav Control Alignment Layouts */
+        .wizard-footer-controls {
+            display: flex;
+            margin-top: 35px;
+            width: 100%;
+        }
+
+        .wizard-footer-controls.step-1-layout {
+            justify-content: flex-end;
+        }
+
+        .wizard-footer-controls.step-2-layout {
+            justify-content: space-between;
+        }
+
+        .btn-wizard-back {
+            background-color: #e5e7eb;
+            color: var(--text-dark);
+            padding: 10px 22px;
+        }
+
+        .btn-wizard-back:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-wizard-next {
+            background-color: var(--primary-green);
+            color: #ffffff;
+            padding: 10px 24px;
+        }
+
+        /* Toast Layouts */
+        .java-toast-pill {
+            position: fixed;
+            bottom: -60px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(31, 41, 55, 0.92); 
+            color: #ffffff;
+            padding: 11px 26px;
+            border-radius: 30px;
+            font-size: 13.5px;
+            font-weight: 500;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.2px;
+            z-index: 100000; 
+            pointer-events: none;
+            opacity: 0;
+            transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+        }
+
+        .java-toast-pill.reveal-toast {
+            bottom: 40px; 
+            opacity: 1;
+        }
+
+        /* ==========================================================================
+           Book Information Detail Layout Extensions (Optimized Size + Centered Header)
+           ========================================================================== */
+        .info-modal-card {
+            max-width: 740px; 
+            padding: 38px 45px; 
+        }
+
+        .info-header-container {
+            display: flex;
+            justify-content: flex-end; /* Pushes the segmented control switch fully right */
+            align-items: center;
+            margin-bottom: 30px; 
+            position: relative; /* Anchor frame for absolute centering */
+            min-height: 40px;
+        }
+
+        .info-modal-title {
+            font-size: 24px; 
+            font-weight: 700;
+            color: var(--text-dark);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Perfect center lock point */
+        }
+
+        .info-tab-switcher {
+            display: flex;
+            background-color: #e5e7eb;
+            padding: 4px;
+            border-radius: 6px;
+            z-index: 5;
+        }
+
+        .info-tab-switcher .tab-btn {
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .info-tab-switcher .tab-btn.active {
+            background-color: var(--primary-green);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .info-main-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 40px; 
+            align-items: start;
+        }
+
+        .info-metadata-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+        }
+
+        .info-data-row {
+            display: grid;
+            grid-template-columns: 130px 1fr; 
+            align-items: flex-start;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .info-right-data-row {
+            display: grid;
+            grid-template-columns: 95px 1fr; 
+            align-items: flex-start;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .info-label {
+            color: #888888; 
+            font-weight: 400;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+            font-weight: 600;
+            white-space: pre-line; 
+        }
+
+        .info-visual-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+        }
+
+        .info-value-block {
+            color: var(--text-dark);
+            font-weight: 600;
+            white-space: pre-line; 
+            line-height: 1.4;
+        }
+
+        /* Fixed Cover Wrapper to center items horizontally in the whitespace column */
+        .info-cover-display-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; /* Horizontally centers both the cover canvas and the text history link */
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .info-cover-preview {
+            width: 135px;
+            height: 180px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .info-cover-preview.clean-code-bg {
+            background: #0284c7; 
+            border: 3px solid #facc15; 
+        }
+
+        #infoCoverFallbackTxt, #borrowCoverFallbackTxt {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <a href="dashboard-librarian.html">
+                    <img src="logo1.png" alt="Pangasinan Provincial Library Logo">
+                </a>
+            </div>
+
+            <ul class="nav-menu">
+                <a href="dashboard-librarian.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Dashboard
+                </a>
+                <a href="patrons-directory-librarian.html" class="nav-item">
+                    <i class="fas fa-cogs"></i>
+                    Patrons Directory
+                </a>
+                <a href="catalog-librarian.html" class="nav-item active">
+                    <i class="fas fa-clipboard-list"></i>
+                    Catalog
+                </a>
+                <a href="borrowing_returning.html" class="nav-item">
+                    <i class="fas fa-hand-holding"></i>
+                    Borrowing / Returning
+                </a>
+                <a href="historical-records.html" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Historical Records
+                </a>
+            </ul>
+
+            <div class="logout-container">
+                <a href="login.html" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="header-top">
+                <div class="date-badge">
+                    <span style="font-size: 18px; margin-right: 8px;">🌤️</span>
+                    Sun, May 11, 2026
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search by Title, ID, or Author">
+                </div>
+                
+                <div class="action-controls">
+                    <button class="btn btn-outline btn-dropdown">
+                        Status: <strong>ALL</strong>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <button class="btn btn-primary" id="openAddBookModalBtn">Add Book</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book ID</th>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2342 - 6931</td>
+                            <td>Harry Potter and the<br>Philosopher's Stone</td>
+                            <td>J.K. Rowling</td>
+                            <td>
+                                <div class="status-wrapper">
+                                    <span class="status-dot dot-available"></span> Available
+                                </div>
+                            </td>
+                            <td><a class="action-link">More Info</a></td>
+                        </tr>
+                        <tr>
+                            <td>1421 - 5232</td>
+                            <td>Harry Potter and the<br>Philosopher's Stone</td>
+                            <td>J.K. Rowling</td>
+                            <td>
+                                <div class="status-wrapper">
+                                    <span class="status-dot dot-borrowed"></span> Borrowed
+                                </div>
+                            </td>
+                            <td><a class="action-link">More Info</a></td>
+                        </tr>
+                        <tr>
+                            <td>2351 - 3205</td>
+                            <td>No Longer Human</td>
+                            <td>Osamu Dazai</td>
+                            <td>
+                                <div class="status-wrapper">
+                                    <span class="status-dot dot-unavailable"></span> Unavailable
+                                </div>
+                            </td>
+                            <td><a class="action-link">More Info</a></td>
+                        </tr>
+                        <tr>
+                            <td>2132 - 9348</td>
+                            <td>Atomic Habits</td>
+                            <td>James Clear</td>
+                            <td>
+                                <div class="status-wrapper">
+                                    <span class="status-dot dot-overdue"></span> Overdue
+                                </div>
+                            </td>
+                            <td><a class="action-link">More Info</a></td>
+                        </tr>
+                        <tr>
+                            <td>4356 - 3452</td>
+                            <td>Clean Code</td>
+                            <td>Robert C. Martin</td>
+                            <td>
+                                <div class="status-wrapper">
+                                    <span class="status-dot dot-borrowed"></span> Borrowed
+                                </div>
+                            </td>
+                            <td><a class="action-link">More Info</a></td>
+                        </tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="addBookModal">
+        <div class="modal-card">
+            
+            <button class="modal-close-btn" id="closeBookModalXBtn" aria-label="Close dialog">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2>Add Book</h2>
+                <div class="wizard-progress-track">
+                    <div class="wizard-progress-fill" id="wizardProgressFill"></div>
+                </div>
+                <div class="wizard-step-descriptor" id="wizardStepDescriptor">Step 1: Core Information</div>
+            </div>
+
+            <form action="#" id="addBookWizardForm">
+                
+                <div id="wizardStep1Content" class="wizard-split-grid">
+                    <div class="form-column-list">
+                        <div class="form-matrix-row">
+                            <label class="form-label">Book Title<span class="required-star">*</span></label>
+                            <input type="text" class="input-box" placeholder="e.g. Clean Code" required>
+                        </div>
+                        <div class="form-matrix-row">
+                            <label class="form-label">Author<span class="required-star">*</span></label>
+                            <input type="text" class="input-box" placeholder="e.g. Robert C. Martin" required>
+                        </div>
+                        <div class="form-matrix-row">
+                            <label class="form-label">ISBN / Barcode<span class="required-star">*</span></label>
+                            <input type="text" class="input-box" placeholder="e.g. 978-0132350884" required>
+                        </div>
+                    </div>
+
+                    <div class="cover-upload-pane">
+                        <span class="cover-title-label">Book Cover:</span>
+                        <label class="cover-vector-canvas" for="coverFileInput">
+                            <i class="fas fa-image"></i>
+                            <div class="cover-add-badge">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </label>
+                        <input type="file" id="coverFileInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <div id="wizardStep2Content" class="form-column-list hidden">
+                    <div class="form-matrix-row">
+                        <label class="form-label">Publisher<span class="required-star">*</span></label>
+                        <input type="text" class="input-box" placeholder="e.g. Prentice Hall" id="txtPublisher">
+                    </div>
+                    <div class="form-matrix-row">
+                        <label class="form-label">Year Published<span class="required-star">*</span></label>
+                        <input type="text" class="input-box" placeholder="e.g. 2008" id="txtYearPublished">
+                    </div>
+                    <div class="form-matrix-row">
+                        <label class="form-label">Number of Pages<span class="required-star">*</span></label>
+                        <input type="text" class="input-box" placeholder="e.g. 464" id="txtPages">
+                    </div>
+                    
+                    <div class="form-matrix-row">
+                        <label class="form-label">Language<span class="required-star">*</span></label>
+                        <div class="custom-select-container" id="languageSelectDropdownWrapper">
+                            <div class="custom-select-trigger-bar" id="langSelectTriggerBtn">
+                                <span class="placeholder-active" id="langSelectTextLabel">Select</span>
+                                <i class="fas fa-chevron-down" id="langSelectChevronIcon"></i>
+                            </div>
+                            <input type="hidden" id="txtHiddenLanguageInput">
+                            
+                            <div class="custom-dropdown-overlay-panel hidden" id="langDropdownOverlayPanel">
+                                <div class="custom-dropdown-option-item" data-value="English (English)">English (English)</div>
+                                <div class="custom-dropdown-option-item" data-value="Tagalog (Tagalog)">Tagalog (Tagalog)</div>
+                                <div class="custom-dropdown-option-item" data-value="Cebuano (Cebuano)">Cebuano (Cebuano)</div>
+                                <div class="custom-dropdown-option-item" data-value="Ilokano (Ilocano)">Ilokano (Ilocano)</div>
+                                <div class="custom-dropdown-option-item" data-value="Español (Spanish)">Español (Spanish)</div>
+                                <div class="custom-dropdown-option-item" data-value="Français (French)">Français (French)</div>
+                                <div class="custom-dropdown-option-item" data-value="Deutsch (German)">Deutsch (German)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-matrix-row">
+                        <label class="form-label">Genre<span class="required-star">*</span></label>
+                        <div class="custom-select-container" id="genreSelectDropdownWrapper">
+                            <div class="custom-select-trigger-bar" id="genreSelectTriggerBtn">
+                                <span class="placeholder-active" id="genreSelectTextLabel">Select (Multiple)</span>
+                                <i class="fas fa-chevron-down" id="genreSelectChevronIcon"></i>
+                            </div>
+                            <input type="hidden" id="txtHiddenGenreInput">
+                            
+                            <div class="custom-dropdown-overlay-panel hidden genre-panel-extended" id="genreDropdownOverlayPanel">
+                                <div class="genre-group-heading">Non-Fiction & Academic Genres</div>
+                                <div class="genre-pill-flexbox">
+                                    <div class="genre-pill-item" data-value="Textbook">Textbook</div>
+                                    <div class="genre-pill-item" data-value="Reference / Dictionary">Reference / Dictionary</div>
+                                    <div class="genre-pill-item" data-value="Biography / Autobiography">Biography / Autobiography</div>
+                                    <div class="genre-pill-item" data-value="Self-Help">Self-Help</div>
+                                    <div class="genre-pill-item" data-value="Manual">Manual</div>
+                                    <div class="genre-pill-item" data-value="Essay / Anthology">Essay / Anthology</div>
+                                    <div class="genre-pill-item" data-value="True Crime">True Crime</div>
+                                </div>
+
+                                <div class="genre-group-heading">Fiction & Leisure Genres</div>
+                                <div class="genre-pill-flexbox">
+                                    <div class="genre-pill-item" data-value="Science Fiction">Science Fiction</div>
+                                    <div class="genre-pill-item" data-value="Fantasy">Fantasy</div>
+                                    <div class="genre-pill-item" data-value="Horror">Horror</div>
+                                    <div class="genre-pill-item" data-value="Mystery / Crime">Mystery / Crime</div>
+                                    <div class="genre-pill-item" data-value="Thriller / Suspense">Thriller / Suspense</div>
+                                    <div class="genre-pill-item" data-value="Historical Fiction">Historical Fiction</div>
+                                    <div class="genre-pill-item" data-value="Romance">Romance</div>
+                                    <div class="genre-pill-item" data-value="Poetry">Poetry</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wizardStep3Content" class="form-column-list hidden">
+                    <div class="form-matrix-row">
+                        <label class="form-label">Total Copies Adding<span class="required-star">*</span></label>
+                        <input type="number" class="input-box" value="1" min="1" id="txtTotalCopies">
+                    </div>
+                    
+                    <div class="form-matrix-row" style="align-items: start; margin-top: 5px;">
+                        <label class="form-label">Shelf Location<span class="required-star">*</span></label>
+                        <div style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span style="font-size: 14px; width: 45px; color: var(--text-dark);">Aisle</span>
+                                <div class="select-wrapper" style="width: 100%; max-width: 200px;">
+                                    <select class="select-box" id="selAisle" style="max-width: 200px;">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Aisle A">Aisle A</option>
+                                        <option value="Aisle B">Aisle B</option>
+                                        <option value="Aisle C">Aisle C</option>
+                                        <option value="Aisle D">Aisle D</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span style="font-size: 14px; width: 45px; color: var(--text-dark);">Rack</span>
+                                <div class="select-wrapper" style="width: 100%; max-width: 200px;">
+                                    <select class="select-box" id="selRack" style="max-width: 200px;">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Rack 1">Rack 1</option>
+                                        <option value="Rack 2">Rack 2</option>
+                                        <option value="Rack 3">Rack 3</option>
+                                        <option value="Rack 4">Rack 4</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-footer-controls step-1-layout" id="wizardFooterDock">
+                    <button type="button" class="btn btn-wizard-back hidden" id="btnWizardBack">Back</button>
+                    <button type="button" class="btn btn-wizard-next" id="btnWizardNext">Next</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="infoBookModal">
+        <div class="modal-card info-modal-card">
+            
+            <button class="modal-close-btn" id="closeInfoModalXBtn" aria-label="Close dialog">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="info-header-container">
+                <h2 class="info-modal-title">Book Information</h2>
+                
+                <div class="info-tab-switcher">
+                    <button class="tab-btn active" id="tabBtnInfo">Info</button>
+                    <button class="tab-btn" id="tabBtnBorrower">Borrower</button>
+                </div>
+            </div>
+
+            <div id="infoTabContentPanel">
+                <div class="info-main-grid">
+                    
+                    <div class="info-metadata-column">
+                        <div class="info-data-row">
+                            <span class="info-label">Book ID</span>
+                            <strong class="info-value" id="lblInfoBookId">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Book Title</span>
+                            <strong class="info-value" id="lblInfoTitle">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Author</span>
+                            <strong class="info-value" id="lblInfoAuthor">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Barcode</span>
+                            <strong class="info-value" id="lblInfoBarcode">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Publisher</span>
+                            <strong class="info-value" id="lblInfoPublisher">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Year Published</span>
+                            <strong class="info-value" id="lblInfoYear">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Number of Pages</span>
+                            <strong class="info-value" id="lblInfoPages">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Language</span>
+                            <strong class="info-value" id="lblInfoLanguage">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Copies</span>
+                            <strong class="info-value" id="lblInfoCopies">----</strong>
+                        </div>
+                    </div>
+
+                    <div class="info-visual-column">
+                        <div class="info-right-data-row">
+                            <span class="info-label">Genre</span>
+                            <div class="info-value-block" id="lblInfoGenre">----</div>
+                        </div>
+                        
+                        <div class="info-right-data-row">
+                            <span class="info-label">Aisle/Rack</span>
+                            <strong class="info-value" id="lblInfoLocation">----</strong>
+                        </div>
+
+                        <div class="info-cover-display-wrapper">
+                            <div class="info-cover-preview" id="infoCoverCanvas">
+                                <span id="infoCoverFallbackTxt">No Cover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div id="borrowerTabContentPanel" class="hidden">
+                
+                <div class="info-main-grid" id="borrowerActiveViewBlock">
+                    
+                    <div class="info-metadata-column">
+                        <div class="info-data-row">
+                            <span class="info-label">Status</span>
+                            <strong class="info-value" id="lblBorrowStatus">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Borrower (ID)</span>
+                            <strong class="info-value" id="lblBorrowerName">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Date & Time Borrowed</span>
+                            <strong class="info-value" id="lblDateBorrowed">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Date & Time Returned</span>
+                            <strong class="info-value" id="lblDateReturned">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Mode</span>
+                            <strong class="info-value" id="lblBorrowMode">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Processed By</span>
+                            <strong class="info-value" id="lblProcessedBy">----</strong>
+                        </div>
+                        <div class="info-data-row">
+                            <span class="info-label">Assessment From Last Borrow</span>
+                            <strong class="info-value" id="lblAssessment">----</strong>
+                        </div>
+                    </div>
+
+                    <div class="info-visual-column" style="height: 100%; justify-content: center;">
+                        <div class="info-cover-display-wrapper">
+                            <div class="info-cover-preview" id="borrowCoverCanvas">
+                                <span id="borrowCoverFallbackTxt">No Cover</span>
+                            </div>
+                            <a class="action-link" style="font-size: 13px; margin-top: 18px; font-weight: 500; text-align: center;">View Borrow History of this Book</a>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div id="borrowerEmptyStateBlock" class="hidden" style="padding: 50px 0; text-align: center; color: var(--text-muted); font-size: 14px;">
+                    <p><i class="fas fa-info-circle" style="margin-right: 8px; color: var(--primary-green);"></i> This book unit instance is safely stationed on shelf. No current active borrower logs.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="java-toast-pill" id="globalJavaToastSystemComponent">Book added successfully</div>
+
+    <script>
+        // Modal Trigger Selectors
+        const bookModal = document.getElementById('addBookModal');
+        const openBookModalBtn = document.getElementById('openAddBookModalBtn');
+        const closeBookXBtn = document.getElementById('closeBookModalXBtn');
+        
+        // Multi-Step Wizard Track Components
+        const wizardForm = document.getElementById('addBookWizardForm');
+        const step1Content = document.getElementById('wizardStep1Content');
+        const step2Content = document.getElementById('wizardStep2Content');
+        const step3Content = document.getElementById('wizardStep3Content');
+        const footerDock = document.getElementById('wizardFooterDock');
+        
+        // Action Buttons
+        const btnBack = document.getElementById('btnWizardBack');
+        const btnNext = document.getElementById('btnWizardNext');
+        const progressFill = document.getElementById('wizardProgressFill');
+        const stepDescriptor = document.getElementById('wizardStepDescriptor');
+
+        // Language Selectors
+        const langWrapper = document.getElementById('languageSelectDropdownWrapper');
+        const langTriggerBtn = document.getElementById('langSelectTriggerBtn');
+        const langTextLabel = document.getElementById('langSelectTextLabel');
+        const langChevronIcon = document.getElementById('langSelectChevronIcon');
+        const langOverlayPanel = document.getElementById('langDropdownOverlayPanel');
+        const hiddenLangInput = document.getElementById('txtHiddenLanguageInput');
+
+        // Genre Selectors
+        const genreWrapper = document.getElementById('genreSelectDropdownWrapper');
+        const genreTriggerBtn = document.getElementById('genreSelectTriggerBtn');
+        const genreTextLabel = document.getElementById('genreSelectTextLabel');
+        const genreChevronIcon = document.getElementById('genreSelectChevronIcon');
+        const genreOverlayPanel = document.getElementById('genreDropdownOverlayPanel');
+        const hiddenGenreInput = document.getElementById('txtHiddenGenreInput');
+        const genrePills = document.querySelectorAll('.genre-pill-item');
+
+        const systemToast = document.getElementById('globalJavaToastSystemComponent');
+
+        let currentStep = 1;
+        let selectedGenres = [];
+
+        openBookModalBtn.addEventListener('click', () => {
+            bookModal.classList.add('show');
+        });
+
+        function dismissBookModal() {
+            bookModal.classList.remove('show');
+            setTimeout(() => {
+                wizardForm.reset();
+                closeLanguageDropdownRoutine();
+                closeGenreDropdownRoutine();
+                
+                langTextLabel.textContent = "Select";
+                langTextLabel.classList.add('placeholder-active');
+                hiddenLangInput.value = "";
+                
+                genreTextLabel.textContent = "Select (Multiple)";
+                genreTextLabel.classList.add('placeholder-active');
+                hiddenGenreInput.value = "";
+                selectedGenres = [];
+                genrePills.forEach(pill => pill.classList.remove('selected-active'));
+
+                navigateToStep(1);
+            }, 200);
+        }
+
+        closeBookXBtn.addEventListener('click', dismissBookModal);
+
+        function navigateToStep(step) {
+            currentStep = step;
+            
+            if (currentStep === 1) {
+                step1Content.classList.remove('hidden');
+                step2Content.classList.add('hidden');
+                step3Content.classList.add('hidden');
+                footerDock.className = "wizard-footer-controls step-1-layout";
+                btnBack.classList.add('hidden');
+                btnNext.textContent = "Next";
+                btnNext.type = "button";
+                progressFill.style.width = "33.33%";
+                stepDescriptor.textContent = "Step 1: Core Information";
+                toggleValidationStates(1);
+            } 
+            else if (currentStep === 2) {
+                step1Content.classList.add('hidden');
+                step2Content.classList.remove('hidden');
+                step3Content.classList.add('hidden');
+                footerDock.className = "wizard-footer-controls step-2-layout";
+                btnBack.classList.remove('hidden');
+                btnNext.textContent = "Next"; 
+                btnNext.type = "button";
+                progressFill.style.width = "66.66%";
+                stepDescriptor.textContent = "Step 2: Bibliographic Details";
+                toggleValidationStates(2);
+            }
+            else if (currentStep === 3) {
+                step1Content.classList.add('hidden');
+                step2Content.classList.add('hidden');
+                step3Content.classList.remove('hidden');
+                footerDock.className = "wizard-footer-controls step-2-layout";
+                btnBack.classList.remove('hidden');
+                btnNext.textContent = "Finish"; 
+                btnNext.type = "submit";
+                progressFill.style.width = "100%"; // 100% full bar on the final step
+                stepDescriptor.textContent = "Step 3: Inventory & Location";
+                toggleValidationStates(3);
+            }
+        }
+
+        function toggleValidationStates(activeStep) {
+            const step2Fields = [
+                document.getElementById('txtPublisher'),
+                document.getElementById('txtYearPublished'),
+                document.getElementById('txtPages'),
+                hiddenLangInput,
+                hiddenGenreInput
+            ];
+            const step3Fields = [
+                document.getElementById('txtTotalCopies'),
+                document.getElementById('selAisle'),
+                document.getElementById('selRack')
+            ];
+            step2Fields.forEach(field => { if (field) field.required = (activeStep === 2); });
+            step3Fields.forEach(field => { if (field) field.required = (activeStep === 3); });
+        }
+
+        btnNext.addEventListener('click', (e) => {
+            if (currentStep === 1) {
+                const inputsValid = step1Content.querySelector('input:invalid') === null;
+                if (inputsValid) navigateToStep(2); else wizardForm.reportValidity();
+            } else if (currentStep === 2) {
+                const inputsValid = step2Content.querySelector('input:invalid') === null && hiddenLangInput.value !== "" && hiddenGenreInput.value !== "";
+                if (inputsValid) navigateToStep(3); else wizardForm.reportValidity();
+            }
+        });
+
+        btnBack.addEventListener('click', () => {
+            if (currentStep === 2) {
+                closeLanguageDropdownRoutine();
+                closeGenreDropdownRoutine();
+                navigateToStep(1);
+            } else if (currentStep === 3) {
+                navigateToStep(2);
+            }
+        });
+
+        langTriggerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (langWrapper.contains(e.target) && langWrapper.classList.contains('active-open')) {
+                closeLanguageDropdownRoutine();
+            } else {
+                closeGenreDropdownRoutine(); 
+                langWrapper.classList.add('active-open');
+                langOverlayPanel.classList.remove('hidden');
+                langChevronIcon.className = "fas fa-chevron-right";
+            }
+        });
+
+        function closeLanguageDropdownRoutine() {
+            langWrapper.classList.remove('active-open');
+            langOverlayPanel.classList.add('hidden');
+            langChevronIcon.className = "fas fa-chevron-down";
+        }
+
+        langOverlayPanel.addEventListener('click', (e) => {
+            const targetOption = e.target.closest('.custom-dropdown-option-item');
+            if (targetOption) {
+                const languageSelectedValue = targetOption.getAttribute('data-value');
+                langTextLabel.textContent = languageSelectedValue;
+                langTextLabel.classList.remove('placeholder-active');
+                hiddenLangInput.value = languageSelectedValue;
+                closeLanguageDropdownRoutine();
+            }
+        });
+
+        genreTriggerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (genreWrapper.contains(e.target) && genreWrapper.classList.contains('active-open')) {
+                closeGenreDropdownRoutine();
+            } else {
+                closeLanguageDropdownRoutine(); 
+                genreWrapper.classList.add('active-open');
+                genreOverlayPanel.classList.remove('hidden');
+                genreChevronIcon.className = "fas fa-chevron-right";
+            }
+        });
+
+        function closeGenreDropdownRoutine() {
+            genreWrapper.classList.remove('active-open');
+            genreOverlayPanel.classList.add('hidden');
+            genreChevronIcon.className = "fas fa-chevron-down";
+        }
+
+        genrePills.forEach(pill => {
+            pill.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                const pillValue = pill.getAttribute('data-value');
+                if (pill.classList.contains('selected-active')) {
+                    pill.classList.remove('selected-active');
+                    selectedGenres = selectedGenres.filter(genre => genre !== pillValue);
+                } else {
+                    pill.classList.add('selected-active');
+                    selectedGenres.push(pillValue);
+                }
+                if (selectedGenres.length > 0) {
+                    genreTextLabel.textContent = selectedGenres.join(', ');
+                    genreTextLabel.classList.remove('placeholder-active');
+                    hiddenGenreInput.value = JSON.stringify(selectedGenres);
+                } else {
+                    genreTextLabel.textContent = "Select (Multiple)";
+                    genreTextLabel.classList.add('placeholder-active');
+                    hiddenGenreInput.value = "";
+                }
+            });
+        });
+
+        wizardForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            dismissBookModal();
+            systemToast.classList.add('reveal-toast');
+            setTimeout(() => { systemToast.classList.remove('reveal-toast'); }, 3000);
+        });
+
+        // ==========================================================================
+        // Repository Database Mapping Router Logic
+        // ==========================================================================
+        const catalogMockDatabase = {
+            "2342 - 6931": {
+                title: "Harry Potter and the Philosopher's Stone",
+                author: "J.K. Rowling",
+                barcode: "978-0747532699",
+                publisher: "Bloomsbury Publishing",
+                year: "1997",
+                pages: "223",
+                language: "English (English)",
+                copies: "1",
+                genre: "Fantasy\nFiction\nAdventure",
+                location: "Aisle A / Rack 2",
+                coverTxt: "Harry Potter",
+                coverClass: "",
+                borrower: null
+            },
+            "1421 - 5232": {
+                title: "Harry Potter and the Philosopher's Stone",
+                author: "J.K. Rowling",
+                barcode: "978-0747532699",
+                publisher: "Bloomsbury Publishing",
+                year: "1997",
+                pages: "223",
+                language: "English (English)",
+                copies: "1",
+                genre: "Fantasy\nFiction\nAdventure",
+                location: "Aisle A / Rack 2",
+                coverTxt: "Harry Potter",
+                coverClass: "",
+                borrower: {
+                    statusHtml: '<span class="status-dot dot-borrowed"></span> Borrowed',
+                    name: "Mark Anthony R. Pineda\n(PL-26-1042)",
+                    dateBorrowed: "May 10, 2026\n10:15 am",
+                    dateReturned: "-",
+                    mode: "Take-Home",
+                    processedBy: "Librarian Joseph",
+                    assessment: "Good Condition"
+                }
+            },
+            "2351 - 3205": {
+                title: "No Longer Human",
+                author: "Osamu Dazai",
+                barcode: "978-0211245561",
+                publisher: "New Directions",
+                year: "1958",
+                pages: "176",
+                language: "English (Translated)",
+                copies: "1",
+                genre: "Fiction\nPsychological Novel\nClassics",
+                location: "Aisle C / Rack 4",
+                coverTxt: "No Longer\nHuman",
+                coverClass: "",
+                borrower: null
+            },
+            "2132 - 9348": {
+                title: "Atomic Habits",
+                author: "James Clear",
+                barcode: "978-0735211292",
+                publisher: "Avery",
+                year: "2018",
+                pages: "320",
+                language: "English (English)",
+                copies: "1",
+                genre: "Self-Help\nNon-Fiction\nPsychology",
+                location: "Aisle B / Rack 1",
+                coverTxt: "Atomic\nHabits",
+                coverClass: "",
+                borrower: {
+                    statusHtml: '<span class="status-dot dot-overdue"></span> Overdue',
+                    name: "Sarah Jane V. Ramos\n(PL-24-3491)",
+                    dateBorrowed: "Apr 20, 2026\n4:00 pm",
+                    dateReturned: "-",
+                    mode: "Take-Home",
+                    processedBy: "Librarian Joseph",
+                    assessment: "Slight Spine Wear"
+                }
+            },
+            "4356 - 3452": {
+                title: "Clean Code",
+                author: "Robert C. Martin",
+                barcode: "978-0132350884",
+                publisher: "Prentice Hall",
+                year: "2008",
+                pages: "464",
+                language: "English",
+                copies: "1",
+                genre: "Textbook\nReference / Dictionary\nManual",
+                location: "Aisle 2 / Rack 1",
+                coverTxt: "Clean Code\n\n•\n\nRobert C. Martin",
+                coverClass: "clean-code-bg",
+                borrower: {
+                    statusHtml: '<span class="status-dot dot-borrowed"></span> Borrowed',
+                    name: "Lea S. Salompas\n(PL-25-8673)",
+                    dateBorrowed: "May 08, 2026\n2:30 pm",
+                    dateReturned: "-",
+                    mode: "Take-Home",
+                    processedBy: "Librarian Joseph",
+                    assessment: "Good Condition"
+                }
+            }
+        };
+
+        const infoBookModal = document.getElementById('infoBookModal');
+        const closeInfoModalXBtn = document.getElementById('closeInfoModalXBtn');
+        const tabBtnInfo = document.getElementById('tabBtnInfo');
+        const tabBtnBorrower = document.getElementById('tabBtnBorrower');
+        const infoTabContentPanel = document.getElementById('infoTabContentPanel');
+        const borrowerTabContentPanel = document.getElementById('borrowerTabContentPanel');
+
+        const lblInfoBookId = document.getElementById('lblInfoBookId');
+        const lblInfoTitle = document.getElementById('lblInfoTitle');
+        const lblInfoAuthor = document.getElementById('lblInfoAuthor');
+        const lblInfoBarcode = document.getElementById('lblInfoBarcode');
+        const lblInfoPublisher = document.getElementById('lblInfoPublisher');
+        const lblInfoYear = document.getElementById('lblInfoYear');
+        const lblInfoPages = document.getElementById('lblInfoPages');
+        const lblInfoLanguage = document.getElementById('lblInfoLanguage');
+        const lblInfoCopies = document.getElementById('lblInfoCopies');
+        const lblInfoGenre = document.getElementById('lblInfoGenre');
+        const lblInfoLocation = document.getElementById('lblInfoLocation');
+        const infoCoverCanvas = document.getElementById('infoCoverCanvas');
+        const infoCoverFallbackTxt = document.getElementById('infoCoverFallbackTxt');
+
+        const borrowerActiveViewBlock = document.getElementById('borrowerActiveViewBlock');
+        const borrowerEmptyStateBlock = document.getElementById('borrowerEmptyStateBlock');
+        const lblBorrowStatus = document.getElementById('lblBorrowStatus');
+        const lblBorrowerName = document.getElementById('lblBorrowerName');
+        const lblDateBorrowed = document.getElementById('lblDateBorrowed');
+        const lblDateReturned = document.getElementById('lblDateReturned');
+        const lblBorrowMode = document.getElementById('lblBorrowMode');
+        const lblProcessedBy = document.getElementById('lblProcessedBy');
+        const lblAssessment = document.getElementById('lblAssessment');
+        const borrowCoverCanvas = document.getElementById('borrowCoverCanvas');
+        const borrowCoverFallbackTxt = document.getElementById('borrowCoverFallbackTxt');
+
+        document.querySelector('table tbody').addEventListener('click', (e) => {
+            const clickTarget = e.target;
+            if (clickTarget.classList.contains('action-link')) {
+                e.preventDefault();
+                const selectedRow = clickTarget.closest('tr');
+                if (!selectedRow || selectedRow.classList.contains('empty-row')) return;
+                
+                const bookIdKey = selectedRow.cells[0].textContent.trim();
+                const bookRecord = catalogMockDatabase[bookIdKey];
+                
+                if (bookRecord) {
+                    lblInfoBookId.textContent = bookIdKey;
+                    lblInfoTitle.textContent = bookRecord.title;
+                    lblInfoAuthor.textContent = bookRecord.author;
+                    lblInfoBarcode.textContent = bookRecord.barcode;
+                    lblInfoPublisher.textContent = bookRecord.publisher;
+                    lblInfoYear.textContent = bookRecord.year;
+                    lblInfoPages.textContent = bookRecord.pages;
+                    lblInfoLanguage.textContent = bookRecord.language;
+                    lblInfoCopies.textContent = bookRecord.copies;
+                    lblInfoGenre.textContent = bookRecord.genre;
+                    lblInfoLocation.textContent = bookRecord.location;
+                    
+                    infoCoverFallbackTxt.textContent = bookRecord.coverTxt;
+                    infoCoverCanvas.className = "info-cover-preview " + bookRecord.coverClass;
+                    
+                    if (bookRecord.borrower) {
+                        borrowerActiveViewBlock.classList.remove('hidden');
+                        borrowerEmptyStateBlock.classList.add('hidden');
+                        lblBorrowStatus.innerHTML = bookRecord.borrower.statusHtml;
+                        lblBorrowerName.textContent = bookRecord.borrower.name;
+                        lblDateBorrowed.textContent = bookRecord.borrower.dateBorrowed;
+                        lblDateReturned.textContent = bookRecord.borrower.dateReturned;
+                        lblBorrowMode.textContent = bookRecord.borrower.mode;
+                        lblProcessedBy.textContent = bookRecord.borrower.processedBy;
+                        lblAssessment.textContent = bookRecord.borrower.assessment;
+                        
+                        borrowCoverFallbackTxt.textContent = bookRecord.coverTxt;
+                        borrowCoverCanvas.className = "info-cover-preview " + bookRecord.coverClass;
+                    } else {
+                        borrowerActiveViewBlock.classList.add('hidden');
+                        borrowerEmptyStateBlock.classList.remove('hidden');
+                    }
+                    
+                    activateDetailPanelTab('info');
+                    infoBookModal.classList.add('show');
+                }
+            }
+        });
+
+        function activateDetailPanelTab(tabMode) {
+            if (tabMode === 'info') {
+                tabBtnInfo.classList.add('active');
+                tabBtnBorrower.classList.remove('active');
+                infoTabContentPanel.classList.remove('hidden');
+                borrowerTabContentPanel.classList.add('hidden');
+            } else {
+                tabBtnInfo.classList.remove('active');
+                tabBtnBorrower.classList.add('active');
+                infoTabContentPanel.classList.add('hidden');
+                borrowerTabContentPanel.classList.remove('hidden');
+            }
+        }
+
+        tabBtnInfo.addEventListener('click', () => activateDetailPanelTab('info'));
+        tabBtnBorrower.addEventListener('click', () => activateDetailPanelTab('borrower'));
+
+        function dismissBookInfoModal() {
+            infoBookModal.classList.remove('show');
+        }
+
+        closeInfoModalXBtn.addEventListener('click', dismissBookInfoModal);
+
+        window.addEventListener('click', (e) => {
+            if (!langWrapper.contains(e.target)) closeLanguageDropdownRoutine();
+            if (!genreWrapper.contains(e.target)) closeGenreDropdownRoutine();
+            if (e.target === bookModal) dismissBookModal();
+            if (e.target === infoBookModal) dismissBookInfoModal();
+        });
+    </script>
+
+</body>
+</html>

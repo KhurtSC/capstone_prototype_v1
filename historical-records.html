@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Records - Pangasinan Provincial Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-green: #0ea64e;
+            --bg-color: #f0f2f5;
+            --sidebar-bg: #ffffff;
+            --text-dark: #000000;
+            --text-muted: #5a5a5a;
+            --border-color: #e5e7eb;
+            --link-blue: #38bdf8;
+            --input-bg: #ffffff;
+            
+            /* Status Dot Colors */
+            --status-yellow: #fde047;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent body scroll, use main-content scroll */
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .logo-container {
+            padding: 35px 20px 20px 20px; 
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 145px; 
+            width: 100%;
+            height: auto; 
+            display: block;
+            margin: 0 auto;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 10px;
+            margin-bottom: 40px; 
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 15px;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-green);
+            color: #ffffff;
+        }
+
+        .nav-item.active i {
+            color: #ffffff;
+        }
+
+        /* Centered Logout Button */
+        .logout-container {
+            margin-top: auto; /* 👈 This pushes the container to the absolute bottom */
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .logout-btn i {
+            color: #f87171; 
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            scrollbar-gutter: stable; /* 👈 Reserves a permanent pixel lane for scrollbars on all pages */
+        }
+
+        /* Header Top Section */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .small-stat-card {
+            background-color: #ffffff;
+            padding: 12px 25px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            min-width: 130px;
+        }
+
+        .small-stat-card p {
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .small-stat-card h2 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .date-badge {
+            background-color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 350px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            border: 1px solid #d1d5db;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+            background-color: var(--input-bg);
+        }
+
+        .date-picker {
+            padding: 12px 20px;
+            background-color: var(--input-bg);
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            color: var(--text-muted);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            outline: none;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .sort-icon {
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        .toggle-group {
+            display: flex;
+            border: 1px solid var(--border-color);
+            background-color: #e5e7eb;
+            margin-left: auto; /* Pushes the toggle to the right */
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .toggle-btn.active {
+            background-color: var(--primary-green);
+            color: #ffffff;
+        }
+
+        .toggle-btn:not(.active) {
+            background-color: transparent;
+            color: var(--text-dark);
+        }
+
+        /* Data Table */
+        .table-container {
+            background-color: #ffffff;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 20px 25px;
+            font-weight: 700;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 20px 25px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .id-link {
+            color: var(--link-blue);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        /* Status Dot Layout Components */
+        .status-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-dot {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .dot-borrowed { background-color: var(--status-yellow); }
+
+        /* Empty rows for layout matching */
+        .empty-row td {
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <a href="dashboard-librarian.html">
+                    <img src="logo1.png" alt="Pangasinan Provincial Library Logo">
+                </a>
+            </div>
+
+            <ul class="nav-menu">
+                <a href="dashboard-librarian.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Dashboard
+                </a>
+                <a href="patrons-directory-librarian.html" class="nav-item">
+                    <i class="fas fa-cogs"></i>
+                    Patrons Directory
+                </a>
+                <a href="catalog-librarian.html" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    Catalog
+                </a>
+                <a href="borrowing_returning.html" class="nav-item">
+                    <i class="fas fa-hand-holding"></i>
+                    Borrowing / Returning
+                </a>
+                <a href="historical-records.html" class="nav-item active">
+                    <i class="fas fa-history"></i>
+                    Historical Records
+                </a>
+
+            </ul>
+
+            <div class="logout-container">
+                <a href="login.html" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="header-top">
+                <div class="small-stat-card">
+                    <p id="statCardLabel">Total Visitors:</p>
+                    <h2 id="statCardValue">2</h2>
+                </div>
+
+                <div class="date-badge">
+                    <span style="font-size: 18px; margin-right: 8px;">🌤️</span>
+                    Sun, May 11, 2026
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search by Title, ID, or Author">
+                </div>
+                
+                <input type="text" class="date-picker" value="05 / 11 / 2026" readonly>
+                
+                <i class="fas fa-arrows-up-down sort-icon"></i>
+
+                <div class="toggle-group">
+                    <button class="toggle-btn active" id="btnToggleVisitors">Visitors</button>
+                    <button class="toggle-btn" id="btnToggleBooks">Books</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead id="tableHeaderBlock">
+                        <tr>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>Full Name</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyBlock">
+                        <tr>
+                            <td>8:09 am</td>
+                            <td>4:03 pm</td>
+                            <td>
+                                James White
+                                <a href="#" class="id-link">(PL-26-4623)</a>
+                            </td>
+                            <td>7h 54min</td>
+                        </tr>
+                        <tr>
+                            <td>11:24 am</td>
+                            <td>1:32 pm</td>
+                            <td>
+                                Edward Aldrin Jake C. Calimlim
+                                <a href="#" class="id-link">(PL-24-2353)</a>
+                            </td>
+                            <td>2h 8min</td>
+                        </tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                        <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // DOM Elements
+        const statCardLabel = document.getElementById('statCardLabel');
+        const statCardValue = document.getElementById('statCardValue');
+        const btnToggleVisitors = document.getElementById('btnToggleVisitors');
+        const btnToggleBooks = document.getElementById('btnToggleBooks');
+        const tableHeaderBlock = document.getElementById('tableHeaderBlock');
+        const tableBodyBlock = document.getElementById('tableBodyBlock');
+
+        // Views Definition Templates
+        const viewsContent = {
+            visitors: {
+                label: "Total Visitors:",
+                value: "2",
+                headers: `
+                    <tr>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Full Name</th>
+                        <th>Duration</th>
+                    </tr>
+                `,
+                body: `
+                    <tr>
+                        <td>8:09 am</td>
+                        <td>4:03 pm</td>
+                        <td>
+                            James White
+                            <a href="#" class="id-link">(PL-26-4623)</a>
+                        </td>
+                        <td>7h 54min</td>
+                    </tr>
+                    <tr>
+                        <td>11:24 am</td>
+                        <td>1:32 pm</td>
+                        <td>
+                            Edward Aldrin Jake C. Calimlim
+                            <a href="#" class="id-link">(PL-24-2353)</a>
+                        </td>
+                        <td>2h 8min</td>
+                    </tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                `
+            },
+            books: {
+                label: "Total Books Borrowed",
+                value: "2",
+                headers: `
+                    <tr>
+                        <th>Borrower (ID)</th>
+                        <th>Book (ID)</th>
+                        <th>Timeline</th>
+                        <th>Status</th>
+                    </tr>
+                `,
+                body: `
+                    <tr>
+                        <td>
+                            Lea S. Salompas
+                            <a href="#" class="id-link">(PL-25-8673)</a>
+                        </td>
+                        <td>
+                            Clean Code
+                            <a href="#" class="id-link">(4356 - 3452)</a>
+                        </td>
+                        <td style="line-height: 1.5;">
+                            <strong>Out:</strong> May 08, 2026<br>
+                            <strong>In:</strong> Pending
+                        </td>
+                        <td>
+                            <div class="status-wrapper">
+                                <span class="status-dot dot-borrowed"></span> Borrowed
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td></tr>
+                `
+            }
+        };
+
+        // Render Controller Function
+        function swithHistoryView(targetMode) {
+            if (targetMode === 'visitors') {
+                btnToggleVisitors.classList.add('active');
+                btnToggleBooks.classList.remove('active');
+                
+                statCardLabel.textContent = viewsContent.visitors.label;
+                statCardValue.textContent = viewsContent.visitors.value;
+                tableHeaderBlock.innerHTML = viewsContent.visitors.headers;
+                tableBodyBlock.innerHTML = viewsContent.visitors.body;
+            } else {
+                btnToggleBooks.classList.add('active');
+                btnToggleVisitors.classList.remove('active');
+                
+                statCardLabel.textContent = viewsContent.books.label;
+                statCardValue.textContent = viewsContent.books.value;
+                tableHeaderBlock.innerHTML = viewsContent.books.headers;
+                tableBodyBlock.innerHTML = viewsContent.books.body;
+            }
+        }
+
+        // Action Trigger Listeners
+        btnToggleVisitors.addEventListener('click', () => swithHistoryView('visitors'));
+        btnToggleBooks.addEventListener('click', () => swithHistoryView('books'));
+    </script>
+
+</body>
+</html>
