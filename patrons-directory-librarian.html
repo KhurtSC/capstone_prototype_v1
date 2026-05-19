@@ -25,13 +25,12 @@
         }
 
         /* Reset and Base Styles */
-        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            scrollbar-gutter: stable; /* 👈 Prevents layout jumping when table scrollbars appear */
+            scrollbar-gutter: stable; 
         }
 
         body {
@@ -40,7 +39,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 👈 Locks down body layout to match other dashboard pages */
+            overflow: hidden; 
         }
 
         /* Utility Classes */
@@ -62,7 +61,7 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--border-color);
-            flex-shrink: 0; /* 👈 Keeps the sidebar perfectly rigid across page swaps */
+            flex-shrink: 0; 
         }
 
         .logo-container {
@@ -113,7 +112,7 @@
         }
 
         .logout-container {
-            margin-top: auto; /* 👈 This pushes the container to the absolute bottom */
+            margin-top: auto; 
             padding: 20px 25px;
             margin-bottom: 20px;
             display: flex;
@@ -141,7 +140,7 @@
             flex: 1;
             padding: 30px 40px;
             overflow-y: auto;
-            scrollbar-gutter: stable; /* 👈 Reserves a permanent pixel lane for scrollbars on all pages */
+            scrollbar-gutter: stable; 
         }
 
         /* Header Elements */
@@ -511,8 +510,16 @@
         .btn-modal-cancel {
             background-color: #e5e7eb;
             color: var(--text-dark);
-            min-width: 75px;
+            min-width: 85px;
             text-align: center;
+            /* Added styles to make it flat and modern */
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
         .btn-modal-cancel:hover {
@@ -524,6 +531,18 @@
             color: #ffffff;
             min-width: 85px;
             text-align: center;
+            /* Added styles to make it flat and modern */
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .btn-modal-create:hover {
+            opacity: 0.9;
         }
 
         /* Temporary ID Elements Matrix */
@@ -621,21 +640,21 @@
            Expanded Custom Specs for More Info Modal (Spacious Variant Overrides)
            ========================================================================== */
         #moreInfoModal .modal-card {
-            max-width: 780px; /* Expanded dynamically to scale row width breathing room */
-            padding: 45px 50px 55px 50px; /* Deeper padding fields */
+            max-width: 780px; 
+            padding: 45px 50px 55px 50px; 
         }
 
         #moreInfoModal .modal-grid {
-            grid-template-columns: 1fr 200px; /* Wider right pane allocation layout */
-            gap: 45px; /* Spacious horizontal column channel gaps */
+            grid-template-columns: 1fr 200px; 
+            gap: 45px; 
         }
 
         #moreInfoModal .form-list {
-            gap: 22px; /* Increased vertical row padding for deep baseline separation */
+            gap: 22px; 
         }
 
         #moreInfoModal .form-row {
-            grid-template-columns: 160px 1fr; /* Wider space for data indicators */
+            grid-template-columns: 160px 1fr; 
         }
 
         .info-toggle-btn {
@@ -664,10 +683,10 @@
            ========================================================================== */
         .java-toast-pill {
             position: fixed;
-            bottom: -60px; /* Initially hidden below viewport edge */
+            bottom: -60px; 
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(31, 41, 55, 0.92); /* Dark charcoal tint overlay */
+            background-color: rgba(31, 41, 55, 0.92); 
             color: #ffffff;
             padding: 11px 26px;
             border-radius: 30px;
@@ -675,14 +694,14 @@
             font-weight: 500;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.1);
             letter-spacing: 0.2px;
-            z-index: 100000; /* Forces placement explicitly on top of everything else */
+            z-index: 100000; 
             pointer-events: none;
             opacity: 0;
             transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
         }
 
         .java-toast-pill.reveal-toast {
-            bottom: 40px; /* Snaps gracefully into position at bottom center */
+            bottom: 40px; 
             opacity: 1;
         }
     </style>
@@ -721,7 +740,7 @@
             </ul>
 
             <div class="logout-container">
-                <a href="#" class="logout-btn">
+                <a href="login.html" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
                     Logout
                 </a>
@@ -866,8 +885,8 @@
                             <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
                         </div>
                         <div class="modal-action-buttons">
-                            <button type="button" class="btn btn-modal-cancel" id="closeAddModalCancelBtn">Cancel</button>
-                            <button type="submit" class="btn btn-modal-create">Create</button>
+                            <button type="button" class="btn-modal-cancel" id="closeAddModalCancelBtn">Cancel</button>
+                            <button type="submit" class="btn-modal-create">Create</button>
                         </div>
                     </div>
                 </div>
@@ -945,8 +964,8 @@
                 </div>
 
                 <div class="modal-action-buttons" id="tempActionBtnContainer" style="margin-bottom: 10px;">
-                    <button type="button" class="btn btn-modal-cancel" id="closeTempModalCancelBtn">Cancel</button>
-                    <button type="submit" class="btn btn-modal-create">Generate</button>
+                    <button type="button" class="btn-modal-cancel" id="closeTempModalCancelBtn">Cancel</button>
+                    <button type="submit" class="btn-modal-create">Generate</button>
                 </div>
 
                 <div class="qr-generated-output-zone hidden" id="tempQrCodeOutputContainer">
@@ -1131,17 +1150,65 @@
 
         closeInfoXBtn.addEventListener('click', dismissInfoModal);
 
-        // Process Add Patron Submission with Toast Component Routing
+        // ==========================================================================
+        // NEW ADD PATRON SUBMIT LOGIC
+        // ==========================================================================
         addForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // 1. Instantly close the modal card stack out of view
+            // 1. Grab all input elements from the Add Form
+            const inputBoxes = addForm.querySelectorAll('.input-box');
+            const selectBoxes = addForm.querySelectorAll('.select-box');
+            const textArea = addForm.querySelector('.textarea-box');
+
+            // 2. Extract values based on their layout order
+            const fullName = inputBoxes[0].value;
+            const age = inputBoxes[1].value;
+            const phone = inputBoxes[2].value;
+            
+            const gender = selectBoxes[0].value || "N/A";
+            const school = selectBoxes[1].value || "N/A";
+            const course = selectBoxes[2].value || "N/A";
+            
+            const address = textArea.value;
+
+            // 3. Generate a fake Patron ID (PL-YY-XXXX)
+            const randomDigits = Math.floor(1000 + Math.random() * 9000);
+            const newPatronId = `PL-26-${randomDigits}`;
+
+            // 4. Generate today's date formatted (MM / DD / YY)
+            const today = new Date();
+            const formattedDate = `${String(today.getMonth() + 1).padStart(2, '0')} / ${String(today.getDate()).padStart(2, '0')} / ${String(today.getFullYear()).slice(-2)}`;
+
+            // 5. Build the new row and set its hidden data attributes for the info modal
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-phone', phone);
+            newRow.setAttribute('data-address', address);
+            newRow.setAttribute('data-school', school);
+            newRow.setAttribute('data-created', formattedDate);
+            newRow.setAttribute('data-borrows', '0');
+
+            // 6. Set the visible table HTML layout
+            newRow.innerHTML = `
+                <td>${newPatronId}</td>
+                <td>${fullName}</td>
+                <td>${age}</td>
+                <td>${gender}</td>
+                <td>${course}</td>
+                <td><a class="action-link open-info-trigger">More Info</a></td>
+            `;
+
+            // 7. Inject the row at the absolute top of the table list
+            const tbody = document.getElementById('patronsTableBody');
+            tbody.insertBefore(newRow, tbody.firstChild);
+            
+            // 8. Instantly close the modal card stack out of view
             dismissAddModal();
             
-            // 2. Display the temporary bottom center floating toast element
+            // 9. Display the temporary bottom center floating toast element
             systemToast.classList.add('reveal-toast');
             
-            // 3. Keep toast showing for exactly 3 seconds before sliding down
+            // 10. Keep toast showing for exactly 3 seconds before sliding down
             setTimeout(() => {
                 systemToast.classList.remove('reveal-toast');
             }, 3000);
@@ -1163,12 +1230,12 @@
                 // Switch target to QR Layout Spec
                 infoPaneAvatarState.classList.add('hidden');
                 infoPaneQrState.classList.remove('hidden');
-                infoToggleIcon.className = 'fas fa-user'; // Swap toggle item indicator control to Profile vector
+                infoToggleIcon.className = 'fas fa-user'; 
             } else {
                 // Return back to Profile Avatar Spec
                 infoPaneQrState.classList.add('hidden');
                 infoPaneAvatarState.classList.remove('hidden');
-                infoToggleIcon.className = 'fas fa-qrcode'; // Reset interface option back to QR indicator icon
+                infoToggleIcon.className = 'fas fa-qrcode'; 
             }
         });
 
